@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>JSON</h1>
+    <h2>Javascript Object Notation</h2>
+
+    <ul id="users-container">
+        <input type="text" id="title" placeholder="title">
+        <br>
+        <input type="text" id="bodyContent" placeholder="main part">
+        <br>
+        <button id="submit" type="submit">Submit</button>
+    </ul>
+    <!-- <input id="title" type="text" placeholder="title">
+    <br>
+    <input id="bodyContent" type="text" placeholder="main lekha likhbo">
+    <br>
+    <button id="submit">submit</button> -->
+
+
+    <script>
+        ////
+        const user = {
+            id: 245,
+            name: "masud",
+            friend: ["kamal", "jamal", "iqbal"],
+            friendAge: [12, 34, 45],
+        };
+
+        const userJSON = JSON.stringify(user); //converts to string 
+        console.log(userJSON);
+        //{"id":245,"name":"masud","friend":["kamal","jamal","iqbal"],"friendAge":[12,34,45]}--- after json conversion
+
+        const userFromJSON = JSON.parse(userJSON); //convert strings into object
+        console.log(userFromJSON);
+        //{id: 245, name: "masud", friend: Array(3), friendAge: Array(3)} --- after string to object
+
+        ////
+
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            // .then(json => console.log(json))
+            .then(json => displayUser(json))
+
+        function displayUser(users) {
+            // console.log("users", users); --- prints all the users in website only capturing data from another site using javascript
+
+            const userNames = users.map(user => user.username);
+            // console.log(userNames);---prints only user names
+
+            const ul = document.getElementById("users-container"); //calling ul items and capturing value
+
+            //for loop to iterate every items in a new const and adding to list
+            for (let i = 0; i < userNames.length; i++) {
+                const user = userNames[i];
+                const li = document.createElement("li");
+                li.innerText = user;
+                ul.appendChild(li);
+            }
+        }
+
+        // const postInfo = {
+        //     title: 'fooooooo',
+        //     body: 'baaaaaar',
+        //     userId: 1
+        // }
+        document.getElementById("submit").addEventListener("click", function () {
+            const title = document.getElementById('title').value;
+            const bodyContent = document.getElementById('bodyContent').value;
+            const post = {
+                title: title,
+                body: bodyContent
+            }
+            nowPostToServer(post);
+        })
+
+        //collecting data from front side and saving data in console 
+        function nowPostToServer(postInfo) {
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                    method: 'POST',
+                    body: JSON.stringify(postInfo),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                })
+                .then(response => response.json())
+                .then(json => console.log(json))
+        }
+    </script>
+</body>
+
+</html>
